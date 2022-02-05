@@ -1,6 +1,6 @@
 import os
 import sys
-from subprocess import Popen
+
 
 # Check for root
 if os.geteuid() != 0:
@@ -62,8 +62,7 @@ def install():
         print("Select EFI Partition")
         efi_part = input("/dev/" + disk)
 
-    print("Are you sure you want to continue? Continuing will remove every file 
-            from the selected partitions.")
+    print("Are you sure you want to continue? Continuing will remove every file from the selected partitions.")
     removal_prompt = input("Y/n ")
 
     if removal_prompt == "n":
@@ -87,7 +86,7 @@ def install():
         os.system("mount /dev/" + disk + efi_part + " /mnt/boot")
 
     print("Installing Nitrogen Base")
-    os.system("pacstrap /mnt base linux-lts linux-firmware base-devel sof-firmware python")
+    os.system("pacstrap /mnt base linux-lts linux-firmware base-devel sof-firmware python btrfs-progs")
     os.system("genfstab -U /mnt >> /mnt/etc/fstab")
     print("Configuring Nitrogen")
     print("Select Region")
@@ -96,7 +95,7 @@ def install():
     print("Select City")
     os.system("ls /mnt/usr/share/zoneinfo/" + region)
     city = input("City: ")
-    os.system("ln -s /mnt/usr/share/zoneinfo/" + region + "/" + city)
+    os.system("ln -s /mnt/usr/share/zoneinfo/" + region + "/" + city + "/mnt/etc/localtime")
     os.system("echo LANG=en_US.UTF-8 >> /mnt/etc/locale.conf")    
     os.system("echo 'en_US.UTF-8 UTF-8' >> /mnt/etc/locale.gen")
     os.system("arch-chroot /mnt/ locale-gen")
@@ -109,12 +108,15 @@ def install():
 
     print("Password for root")
     os.system("arch-chroot /mnt/ passwd root")
+
+
     print("Creating a user")
     username = input("New user's name: ")
     os.system("arch-chroot /mnt/ useradd -m -G wheel " + username)
     os.system("arch-chroot /mnt/ passwd " + username)
-
     os.system("pacstrap /mnt grub")
+    
+
     print("Installing Boot Loader")
     if efi is True:
         # TODO: add efi grub installer
@@ -124,9 +126,17 @@ def install():
     os.system("arch-chroot /mnt/ grub-mkconfig -o /boot/grub/grub.cfg")
     
     print("Configuring Nitrogen pt 2")
-    os.system("arch-chroot /mnt/ curl https://raw.githubusercontent.com/NitrogenLinux/chemical/main/os-release > /etc/os-release")
-    os.system("arch-chroot /mnt/ curl https://raw.githubusercontent.com/NitrogenLinux/chemical/main/os-release > /usr/lib/os-release")                                                            │~
+    os.system("curl https://raw.githubusercontent.com/NitrogenLinux/chemical/main/os-release > /mnt/etc/os-release")
+    os.system("curl https://raw.githubusercontent.com/NitrogenLinux/chemical/main/os-release > /mnt/usr/lib/os-release")
 
+    print("Installing Elements")
+    os.system("wget https://github.com/NitrogenLinux/elements/raw/stable/lmt")
+    os.system("mv -v lmt /mnt/usr/bin")
+    os.system("mkdir -p /mnt/etc/elements/repos/")
+    os.system("git clone https://github.com/NitrogenLinux/elements-repo.git /mnt/etc/elements/repos/")
+    os.system("wget https://github.com/tekq/elements-search/raw/main/search")
+    os.system("wget https://github.com/tekq/elements-search/raw/main/search-repo")
+    os.system("mv -v search* /mnt/etc/elements/")
 
 # Run Chemical with either atomic installer or normal installer.
 if atomic is True:
