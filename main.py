@@ -62,7 +62,8 @@ def install():
         print("Select EFI Partition")
         efi_part = input("/dev/" + disk)
 
-    print("Are you sure you want to continue? Continuing will remove every file from the selected partitions.")
+    print("Are you sure you want to continue? Continuing will remove every file 
+            from the selected partitions.")
     removal_prompt = input("Y/n ")
 
     if removal_prompt == "n":
@@ -117,6 +118,8 @@ def install():
         else:
             print("Passwords do not match!")
             set_root_password()
+    set_root_password()
+
 
     print("Creating a user")
     username = input("New user's name: ")
@@ -130,6 +133,8 @@ def install():
         else:
             print("Passwords do not match!")
             set_user_passwd()
+    set_user_passwd()
+
     os.system("pacstrap /mnt grub")
     print("Installing Boot Loader")
     if efi is True:
