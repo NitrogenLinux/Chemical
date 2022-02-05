@@ -62,7 +62,8 @@ def install():
         print("Select EFI Partition")
         efi_part = input("/dev/" + disk)
 
-    print("Are you sure you want to continue? Continuing will remove every file from the selected partitions.")
+    print("Are you sure you want to continue? Continuing will remove every file 
+            from the selected partitions.")
     removal_prompt = input("Y/n ")
 
     if removal_prompt == "n":
@@ -122,6 +123,9 @@ def install():
         os.system("arch-chroot /mnt/ grub-install --target=i386-pc /dev/" + disk)
     os.system("arch-chroot /mnt/ grub-mkconfig -o /boot/grub/grub.cfg")
     
+    print("Configuring Nitrogen pt 2")
+    os.system("arch-chroot /mnt/ curl https://raw.githubusercontent.com/NitrogenLinux/chemical/main/os-release > /etc/os-release")
+    os.system("arch-chroot /mnt/ curl https://raw.githubusercontent.com/NitrogenLinux/chemical/main/os-release > /usr/lib/os-release")                                                            │~
 
 
 # Run Chemical with either atomic installer or normal installer.
