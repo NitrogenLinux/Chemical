@@ -1,6 +1,6 @@
 import os
 import sys
-
+from subprocess import Popen
 
 # Check for root
 if os.geteuid() != 0:
@@ -97,7 +97,10 @@ def install():
     os.system("ls /mnt/usr/share/zoneinfo/" + region)
     city = input("City: ")
     os.system("ln -s /mnt/usr/share/zoneinfo/" + region + "/" + city)
-    # TODO: add locale generation
+    os.system("echo LANG=en_US.UTF-8 >> /mnt/etc/locale.conf")    
+    os.system("echo 'en_US.UTF-8 UTF-8' >> /mnt/etc/locale.gen")
+    os.system("arch-chroot /mnt/ locale-gen")
+    os.system("arch-chroot /mnt/ hwclock --systohc")
 
     print("Select hostname(empty for default)")
     hostname = input("Hostname: ")
@@ -109,18 +112,22 @@ def install():
         root_passwd = input("password: ")
         confirm_root_passwd = input("again: ")
         if root_passwd == confirm_root_passwd:
-            pass
+            root_passwd_change = Popen(['/usr/bin/passwd', 'root', '--stdin'])
+            root_passwd_chang.communicate(root_passwd)
+
         else:
             print("Passwords do not match!")
             set_root_password()
 
     print("Creating a user")
     username = input("New user's name: ")
+    os.system("arch-chroot /mnt/ useradd -m -G wheel " + username)
     def set_user_passwd():
         user_password = input("New user's password: ")
         confirm_user_passwd = input("again: ")
         if user_password == confirm_user_passwd:
-            pass
+            user_change_password = Popen(['/usr/bin/passwd', username, '--stdin'])
+            user_change_password.communicate(user_password)
         else:
             print("Passwords do not match!")
             set_user_passwd()
