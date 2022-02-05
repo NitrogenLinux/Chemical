@@ -147,6 +147,7 @@ def install():
     os.system("arch-chroot /mnt/ systemctl enable gdm")
 
     print("Installing Theme and Icons")
+    os.system("pacstrap /mnt dconf")
     os.system("git clone https://github.com/EliverLara/Juno.git -b ocean")
     os.system("mv Juno /mnt/usr/themes/")
     os.system("arch-chroot /mnt gsettings set org.gnome.desktop.interface gtk-theme 'Juno'")
@@ -154,8 +155,8 @@ def install():
     os.system("wget -qO- https://git.io/papirus-icon-theme-install | DESTDIR='/mnt/usr/share/icons/' sh")
 
     print("Setting wallpaper")
-    os.system("echo '[org/gnome/desktop/background]' > /etc/dconf/db/local.d/01-background")
-    os.system("echo picture-uri='file:///usr/share/backgrounds/nitrogen.jpg' >> /etc/dconf/db/local.d/01-background")
+    os.system("echo '[org/gnome/desktop/background]' > /mnt/etc/dconf/db/local.d/01-background")
+    os.system('echo "picture-uri="file:///usr/share/backgrounds/nitrogen.jpg"" >> /mnt/etc/dconf/db/local.d/01-background')
 
     print("")
     print("")
