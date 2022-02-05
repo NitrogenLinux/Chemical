@@ -146,6 +146,29 @@ def install():
     os.system("pacstrap /mnt networkmanager gnome gdm")
     os.system("arch-chroot /mnt/ systemctl enable gdm")
 
+    print("Installing Theme and Icons")
+    os.system("git clone https://github.com/EliverLara/Juno.git -b ocean")
+    os.system("mv Juno /mnt/usr/themes/")
+    os.system("arch-chroot /mnt gsettings set org.gnome.desktop.interface gtk-theme 'Juno'")
+    os.system("arch-chroot /mnt gsettings set org.gnome.desktop.wm.preferences theme 'Juno'")
+    os.system("wget -qO- https://git.io/papirus-icon-theme-install | DESTDIR='/mnt/usr/share/icons/' sh")
+
+    print("Setting wallpaper")
+    os.system("echo '[org/gnome/desktop/background]' > /etc/dconf/db/local.d/01-background")
+    os.system("echo picture-uri='file:///usr/share/backgrounds/nitrogen.jpg' >> /etc/dconf/db/local.d/01-background")
+
+    print("")
+    print("")
+    print("")
+
+    print("Do you want to reboot?")
+    reboot_y_n = input("Y/n")
+    if reboot_y_n == "y":
+        os.system("reboot")
+    else:
+        pass
+
+
 # Run Chemical with either atomic installer or normal installer.
 if atomic is True:
     atomic()
