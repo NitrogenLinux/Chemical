@@ -28,8 +28,7 @@ def atomic():
 
 
 def install():
-    # TODO: make regular installer
-
+    os.system("pacman -Sy git wget curl --noconfirm")
     os.system("clear")
     print("Welcome to Nitrogen Installer!")
     print()
@@ -38,6 +37,8 @@ def install():
     os.system("lsblk -d")
     disk = input("/dev/")
     os.system("cfdisk /dev/" + disk)
+
+    os.system("clear")
 
     def im_sure_the_partitions_are_right():
         os.system("lsblk /dev/" + disk)
