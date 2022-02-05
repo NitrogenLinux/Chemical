@@ -112,7 +112,7 @@ def install():
         root_passwd = input("password: ")
         confirm_root_passwd = input("again: ")
         if root_passwd == confirm_root_passwd:
-            root_passwd_change = Popen(['/usr/bin/passwd', 'root', '--stdin'])
+            root_passwd_change = Popen(['arch-chroot', '/mnt/' ,'/usr/bin/passwd', 'root', '--stdin'])
             root_passwd_chang.communicate(root_passwd)
 
         else:
@@ -126,7 +126,7 @@ def install():
         user_password = input("New user's password: ")
         confirm_user_passwd = input("again: ")
         if user_password == confirm_user_passwd:
-            user_change_password = Popen(['/usr/bin/passwd', username, '--stdin'])
+            user_change_password = Popen(['arch-chroot', '/mnt/', '/usr/bin/passwd', username, '--stdin'])
             user_change_password.communicate(user_password)
         else:
             print("Passwords do not match!")
@@ -135,10 +135,10 @@ def install():
     print("Installing Boot Loader")
     if efi is True:
         # TODO: add efi grub installer
-        os.system("grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=Nitrogen")
+        os.system("arch-chroot /mnt/ grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=Nitrogen")
     else:
-        os.system("grub-install --target=i386-pc /dev/" + disk)
-    os.system("grub-mkconfig -o /boot/grub/grub.cfg")
+        os.system("arch-chroot /mnt/ grub-install --target=i386-pc /dev/" + disk)
+    os.system("arch-chroot /mnt/ grub-mkconfig -o /boot/grub/grub.cfg")
     
 
 
