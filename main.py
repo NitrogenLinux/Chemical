@@ -155,6 +155,7 @@ def install():
     os.system("wget -qO- https://git.io/papirus-icon-theme-install | DESTDIR='/mnt/usr/share/icons/' sh")
 
     print("Setting wallpaper")
+    os.system("mkdir -p /mnt/etc/dconf/db/local.d/")
     os.system("echo '[org/gnome/desktop/background]' > /mnt/etc/dconf/db/local.d/01-background")
     os.system('echo "picture-uri="file:///usr/share/backgrounds/nitrogen.jpg"" >> /mnt/etc/dconf/db/local.d/01-background')
 
