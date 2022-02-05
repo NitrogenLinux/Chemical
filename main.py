@@ -130,6 +130,7 @@ def install():
     os.system("curl https://raw.githubusercontent.com/NitrogenLinux/chemical/main/os-release > /mnt/usr/lib/os-release")
 
     print("Installing Elements")
+    os.system("pacstrap /mnt wget")
     os.system("wget https://github.com/NitrogenLinux/elements/raw/stable/lmt")
     os.system("mv -v lmt /mnt/usr/bin")
     os.system("mkdir -p /mnt/etc/elements/repos/")
