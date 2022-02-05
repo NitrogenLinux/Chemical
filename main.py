@@ -108,32 +108,11 @@ def install():
         os.system("echo nitrogen > /mnt/etc/hostname")
 
     print("Password for root")
-    def set_root_password():
-        root_passwd = input("password: ")
-        confirm_root_passwd = input("again: ")
-        if root_passwd == confirm_root_passwd:
-            root_passwd_change = Popen(['arch-chroot', '/mnt/' ,'/usr/bin/passwd', 'root', '--stdin'])
-            root_passwd_chang.communicate(root_passwd)
-
-        else:
-            print("Passwords do not match!")
-            set_root_password()
-    set_root_password()
-
-
+    os.system("arch-chroot /mnt/ passwd root")
     print("Creating a user")
     username = input("New user's name: ")
     os.system("arch-chroot /mnt/ useradd -m -G wheel " + username)
-    def set_user_passwd():
-        user_password = input("New user's password: ")
-        confirm_user_passwd = input("again: ")
-        if user_password == confirm_user_passwd:
-            user_change_password = Popen(['arch-chroot', '/mnt/', '/usr/bin/passwd', username, '--stdin'])
-            user_change_password.communicate(user_password)
-        else:
-            print("Passwords do not match!")
-            set_user_passwd()
-    set_user_passwd()
+    os.system("arch-chroot /mnt/ passwd " + username)
 
     os.system("pacstrap /mnt grub")
     print("Installing Boot Loader")
