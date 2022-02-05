@@ -62,8 +62,7 @@ def install():
         print("Select EFI Partition")
         efi_part = input("/dev/" + disk)
 
-    print("Are you sure you want to continue? Continuing will remove every file 
-            from the selected partitions.")
+    print("Are you sure you want to continue? Continuing will remove every file from the selected partitions.")
     removal_prompt = input("Y/n ")
 
     if removal_prompt == "n":
