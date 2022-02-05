@@ -139,6 +139,12 @@ def install():
     os.system("wget https://github.com/tekq/elements-search/raw/main/search")
     os.system("wget https://github.com/tekq/elements-search/raw/main/search-repo")
     os.system("mv -v search* /mnt/etc/elements/")
+    os.system("chmod a+x /usr/bin/lmt")
+    os.system("chmod a+x /etc/elements/search*")
+
+    print("Installing desktop environment")
+    os.system("pacstrap /mnt networkmanager gnome gdm")
+    os.system("arch-chroot /mnt/ systemctl enable gdm")
 
 # Run Chemical with either atomic installer or normal installer.
 if atomic is True:
