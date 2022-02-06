@@ -86,7 +86,7 @@ def install():
         os.system("mkdir /mnt/boot/efi")
         os.system("mount /dev/" + disk + efi_part + " /mnt/boot/efi")
         print("/dev/" + disk + efi_part)
-
+    sys.exit()
     print("Installing Nitrogen Base")
     os.system("pacstrap /mnt base linux-lts linux-firmware base-devel sof-firmware python btrfs-progs")
     os.system("genfstab -U /mnt >> /mnt/etc/fstab")
