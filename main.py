@@ -83,8 +83,8 @@ def install():
     os.system("mount /dev/" + disk + root + " /mnt")
     os.system("swapon -a")
     if efi is True: 
-        os.system("mkdir /mnt/boot")
-        os.system("mount /dev/" + disk + efi_part + " /mnt/boot")
+        os.system("mkdir /mnt/boot/efi")
+        os.system("mount /dev/" + disk + efi_part + " /mnt/boot/efi")
         print("/dev/" + disk + efi_part)
 
     print("Installing Nitrogen Base")
@@ -122,7 +122,7 @@ def install():
     print("Installing Boot Loader")
     if efi is True:
         # TODO: add efi grub installer
-        os.system("arch-chroot /mnt/ grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=Nitrogen")
+        os.system("arch-chroot /mnt/ grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=Nitrogen")
     else:
         os.system("arch-chroot /mnt/ grub-install --target=i386-pc /dev/" + disk)
     os.system("arch-chroot /mnt/ grub-mkconfig -o /boot/grub/grub.cfg")
