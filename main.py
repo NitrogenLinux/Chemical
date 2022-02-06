@@ -97,7 +97,7 @@ def install():
     print("Select City")
     os.system("ls /mnt/usr/share/zoneinfo/" + region)
     city = input("City: ")
-    os.system("ln -s /mnt/usr/share/zoneinfo/" + region + "/" + city + "/mnt/etc/localtime")
+    os.system("ln -s /mnt/usr/share/zoneinfo/" + region + "/" + city + " /mnt/etc/localtime")
     os.system("echo LANG=en_US.UTF-8 >> /mnt/etc/locale.conf")    
     os.system("echo 'en_US.UTF-8 UTF-8' >> /mnt/etc/locale.gen")
     os.system("arch-chroot /mnt/ locale-gen")
@@ -123,6 +123,7 @@ def install():
     if efi is True:
         # TODO: add efi grub installer
         os.system("pacstrap /mnt efibootmgr dosfstools os-prober mtools")
+        os.system("mkdir /mnt/boot/efi")
         os.system("arch-chroot /mnt/ grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=Nitrogen")
     else:
         os.system("arch-chroot /mnt/ grub-install --target=i386-pc /dev/" + disk)
