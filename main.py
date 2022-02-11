@@ -34,6 +34,11 @@ def install():
 
     os.system("clear")
 
+    if atomic is False:
+        print("Chemical 1.0")
+    else:
+        print("Chemical 1.0(Atomic install)")
+
     def im_sure_the_partitions_are_right():
         os.system("lsblk /dev/" + disk)
         print("Are you sure the partitions are correctly created?")
