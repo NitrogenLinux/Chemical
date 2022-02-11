@@ -21,12 +21,6 @@ if sys.argv[1:]:
 else:
     atomic = False
 
-
-def atomic():
-    # TODO: make atomic installer
-    print()
-
-
 def install():
     os.system("pacman -Sy git wget curl --noconfirm")
     os.system("clear")
@@ -92,11 +86,25 @@ def install():
     os.system("genfstab -U /mnt >> /mnt/etc/fstab")
     print("Configuring Nitrogen")
     print("Select Region")
+    region_right = False
+    city_right = False
     os.system("ls /mnt/usr/share/zoneinfo/")
-    region = input("Region: ")
+    while region_right is False:
+        region = input("Region: ")
+        if os.system("ls /mnt/usr/share/zoneinfo/" + region + " > /dev/null") == 0:
+            region_right = True
+        else:
+            pass
+
     print("Select City")
     os.system("ls /mnt/usr/share/zoneinfo/" + region)
-    city = input("City: ")
+    while city_right is False:
+        city = input("City: ")
+        if os.system("ls /mnt/usr/share/zoneinfo/" + region + "/" + city + " > /dev/null") == 0:
+            city_right = True
+        else:
+            pass
+
     os.system("ln -s /mnt/usr/share/zoneinfo/" + region + "/" + city + " /mnt/etc/localtime")
     os.system("echo LANG=en_US.UTF-8 >> /mnt/etc/locale.conf")    
     os.system("echo 'en_US.UTF-8 UTF-8' >> /mnt/etc/locale.gen")
@@ -107,17 +115,30 @@ def install():
     hostname = input("Hostname: ")
     if len(hostname) == 0:
         os.system("echo nitrogen > /mnt/etc/hostname")
+    else:
+        os.system("echo " + hostname + " > /mnt/etc/hostname")
 
     print("Password for root")
-    os.system("arch-chroot /mnt/ passwd root")
+    correct_passwd = False
+    while correct_passwd is False:
+        c_passwd_answer = os.system("arch-chroot /mnt/ passwd root")
+        if c_passwd_answer == 0:
+            correct_passwd = True
+            pass
 
 
     print("Creating a user")
     username = input("New user's name: ")
     os.system("arch-chroot /mnt/ useradd -m -G wheel " + username)
     os.system("arch-chroot /mnt/ passwd " + username)
+    correct_passwd = False
+    while correct_passwd is False:
+        c_passwd_answer = os.system("arch-chroot /mnt/ passwd " + username)
+        if c_passwd_answer == 0:
+            correct_passwd = True
+            pass
+
     os.system("pacstrap /mnt grub")
-    
 
     print("Installing Boot Loader")
     if efi is True:
@@ -145,9 +166,28 @@ def install():
     os.system("chmod a+x /usr/bin/lmt")
     os.system("chmod a+x /etc/elements/search*")
 
-    print("Installing desktop environment")
-    os.system("pacstrap /mnt networkmanager gnome gdm")
-    os.system("arch-chroot /mnt/ systemctl enable gdm")
+    if atomic is True:
+        print("Will you be using iwd NetworkManager or wpa_supplicant?")
+        print("1. iwd")
+        print("2. NetworkManager")
+        print("3. wpa_supplicant")
+        network_supplier = int(input())
+        if network_supplier == 1:
+            os.system("pacstrap /mnt iwd")
+            os.system("arch-chroot /mnt/ systemctl enable iwd")
+        elif network_supplier == 2:
+            os.system("pacstrap /mnt networkmanager")
+            os.system("arch-chroot /mnt/ systemctl enable NetworkManager")
+        elif network_supplier == 3:
+            os.system("pacstrap /mnt wpa_supplicant wpa_cli")
+            os.system("arch-chroot /mnt/ systemctl enable wpa_supplicant")
+
+    else:
+        print("Installing desktop environment")
+        os.system("pacstrap /mnt networkmanager gnome gdm")
+        os.system("arch-chroot /mnt/ systemctl enable gdm")
+        os.system("arch-chroot /mnt/ systemctl enable NetworkManager")
+
 
     print("")
     print("")
@@ -161,8 +201,5 @@ def install():
         pass
 
 
-# Run Chemical with either atomic installer or normal installer.
-if atomic is True:
-    atomic()
-else:
-    install()
+# Run Installer
+install()
