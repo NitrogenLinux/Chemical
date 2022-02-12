@@ -24,20 +24,21 @@ else:
 def install():
     os.system("pacman -Sy git wget curl --noconfirm")
     os.system("clear")
-    print("Welcome to Nitrogen Installer!")
+    if atomic is False:
+        print("Chemical 1.0")
+    else:
+        print("Chemical 1.0(Atomic install)")
     print()
     print("Partition Disks")
     print("Which disk would you like to use?")
     os.system("lsblk -d")
     disk = input("/dev/")
+    while os.system("ls /dev/" + disk + " >> /dev/null") != 0:
+        print("That doesn't seem right, try again")
+        disk = input("/dev/")
     os.system("cfdisk /dev/" + disk)
 
     os.system("clear")
-
-    if atomic is False:
-        print("Chemical 1.0")
-    else:
-        print("Chemical 1.0(Atomic install)")
 
     def im_sure_the_partitions_are_right():
         os.system("lsblk /dev/" + disk)
@@ -46,6 +47,7 @@ def install():
         if sure in ["y", "Y", "yes", "yeah"]:
             pass
         elif sure in ["n", "N", "no", "nope"]:
+            os.system("cfdisk /dev/" + disk)
             im_sure_the_partitions_are_right()
         else:
             print(sure + ": Command not understood")
@@ -55,6 +57,21 @@ def install():
     print("Formatting partitions")
     print("Select root partition")
     root = input("/dev/" + disk)
+    if len(root) < 1:
+        while len(str(root)) < 1:
+            print("That's not right, try again")
+            root = input("/dev/" + disk)
+    else:
+        while os.system("blkid /dev/" + disk + root + " >> /dev/null") != 0:
+            print("That's not right, try again")
+            os.system("lsblk /dev/" + disk)
+            root = input("/dev/" + disk)
+        while os.system("ls /dev/" + disk + root + " >> /dev/null") != 0:
+            print("That's not right, try again")
+            os.system("lsblk /dev/" + disk)
+            root = input("/dev/" + disk)
+
+
     print("Select swap(empty for none)")
     swap = input("/dev/" + disk)
 
@@ -143,17 +160,56 @@ def install():
             correct_passwd = True
             pass
 
+    print("Installing drivers")
+    print("Which GPU are you using?")
+    print("1. NVIDIA")
+    print("2. AMD")
+    print("3. Intel")
+    print("4. Other/VM")
+
+    gpu = input("GPU Manufacturer: ")
+    if gpu == 1:
+        os.system("pacstrap /mnt nvidia-lts")
+    elif gpu == 2:
+        os.system("pacstrap /mnt mesa")
+    elif gpu == 3:
+        os.system("pacstrap /mnt mesa xf86-video-intel")
+    elif gpu == 4:
+        print("Virtual Machines:")
+        print("1. VMWare")
+        print("2. KVM")
+        print("3. None")
+
+        vm_gpu = input("GPU Manufacturer: ")
+        if vm_gpu == 1:
+            print("Also installing VMmouse")
+            os.system("pacstrap /mnt xf86-video-vmware xf86-input-vmmouse")
+        elif vm_gpu == 2:
+            os.system("pacstrap /mnt xf86-video-qxl")
+        elif vm_gpu == 3:
+            pass
+
+    print("Would you like to install Laptop-specific packages?")
+    laptop = input("Y/n ")
+    if str(laptop) in ["y", "Y"]:
+        os.system("pacstrap /mnt tlp powertop")
+        os.system("arch-chroot /mnt/ systemctl --enable tlp")
+    else:
+        pass
+
+    print("Installing Grub")
     os.system("pacstrap /mnt grub")
 
-    print("Installing Boot Loader")
+    print("Installing and Configuring Boot Loader")
     if efi is True:
-        # TODO: add efi grub installer
-        os.system("pacstrap /mnt efibootmgr dosfstools os-prober mtools")
-        os.system("mkdir /mnt/boot/efi")
-        os.system("arch-chroot /mnt/ grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=Nitrogen")
+        # TODO: fix efi grub installer
+        os.system("pacstrap /mnt efibootmgr dosfstools os-prober mtools") # UEFI Specific Packages
+        os.system("mkdir /mnt/boot/efi") # create /boot/efi in /mnt
+        os.system("arch-chroot /mnt/ grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=Nitrogen") # GRUB UEFI Installation
     else:
-        os.system("arch-chroot /mnt/ grub-install --target=i386-pc /dev/" + disk)
-    os.system("arch-chroot /mnt/ grub-mkconfig -o /boot/grub/grub.cfg")
+        os.system("arch-chroot /mnt/ grub-install --target=i386-pc /dev/" + disk) # Grub BIOS installation
+
+    os.system("arch-chroot /mnt/ grub-mkconfig -o /boot/grub/grub.cfg") # Create Grub Configuration
     
     print("Configuring Nitrogen pt 2")
     os.system("curl https://raw.githubusercontent.com/NitrogenLinux/chemical/main/os-release > /mnt/etc/os-release")
@@ -161,7 +217,7 @@ def install():
 
     print("Installing Elements")
     os.system("pacstrap /mnt wget")
-    os.system("wget https://github.com/NitrogenLinux/elements/raw/stable/lmt")
+    os.system("wget https://github.com/NitrogenLinux/elements/raw/stable/lmt") # Download Elements
     os.system("mv -v lmt /mnt/usr/bin")
     os.system("mkdir -p /mnt/etc/elements/repos/")
     os.system("git clone https://github.com/NitrogenLinux/elements-repo.git /mnt/etc/elements/repos/")
