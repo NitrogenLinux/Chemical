@@ -200,13 +200,8 @@ def install():
 
     print("Installing and Configuring Boot Loader")
     if efi is True:
-        print("This isn't going to boot")
-        os.system("arch-chroot /mnt/ bootctl install")
-        os.system("mkdir -p /mnt/boot/loader/entries")
-        os.system("echo 'title Nitrogen Linux' > /mnt/boot/loader/entries/nitrogen.conf ")
-        os.system("echo 'linux /vmlinuz-linux-lts' >> /mnt/boot/loader/entries/nitrogen.conf ")
-        os.system("echo 'initrd /initramfs-linux.img' >> /mnt/boot/loader/entries/nitrogen.conf ")
-
+        os.system("pacstrap /mnt efibootmgr dosfstools os-prober mtools") # UEFI Specific Packages
+        os.system("arch-chroot /mnt/ grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=Nitrogen") # GRUB UEFI Installation
     else:
         print("Installing Grub")
         os.system("pacstrap /mnt grub") # install GRUB
