@@ -154,8 +154,7 @@ def install():
     os.system("arch-chroot /mnt/ passwd " + username)
     correct_passwd = False
     while correct_passwd is False:
-        c_passwd_answer = os.system("arch-chroot /mnt/ passwd " + username)
-        if c_passwd_answer == 0:
+        if os.system("arch-chroot /mnt/ passwd " + username == 0):
             correct_passwd = True
             pass
 
@@ -166,7 +165,7 @@ def install():
     print("3. Intel")
     print("4. Other/VM")
 
-    gpu = input("GPU Manufacturer: ")
+    gpu = int(input("GPU Manufacturer: "))
     if gpu == 1:
         os.system("pacstrap /mnt nvidia-lts")
     elif gpu == 2:
@@ -179,7 +178,7 @@ def install():
         print("2. KVM")
         print("3. None")
 
-        vm_gpu = input("GPU Manufacturer: ")
+        vm_gpu = int(input("GPU Manufacturer: "))
         if vm_gpu == 1:
             print("Also installing VMmouse")
             os.system("pacstrap /mnt xf86-video-vmware xf86-input-vmmouse")
@@ -201,7 +200,6 @@ def install():
         os.system("pacstrap /mnt efibootmgr dosfstools os-prober mtools grub") # UEFI Specific Packages and grub
         os.system("arch-chroot /mnt/ grub-install --target=x86_64-efi --bootloader-id=Nitrogen") # GRUB UEFI Installation
         import time
-        time.sleep(10)
     else:
         print("Installing Grub")
         os.system("pacstrap /mnt grub") # install GRUB
@@ -209,14 +207,12 @@ def install():
 
     os.system("arch-chroot /mnt/ grub-mkconfig -o /boot/grub/grub.cfg") # Create Grub Configuration
 
-    time.sleep(10)
-
     print("Configuring Nitrogen pt 2")
     os.system("curl https://raw.githubusercontent.com/NitrogenLinux/chemical/main/os-release > /mnt/etc/os-release")
     os.system("curl https://raw.githubusercontent.com/NitrogenLinux/chemical/main/os-release > /mnt/usr/lib/os-release")
 
     print("Installing Elements")
-    os.system("pacstrap /mnt wget")
+    os.system("pacstrap /mnt wget git python python-pip")
     os.system("wget https://github.com/NitrogenLinux/elements/raw/stable/lmt") # Download Elements
     os.system("mv -v lmt /mnt/usr/bin")
     os.system("mkdir -p /mnt/etc/elements/repos/")
@@ -224,8 +220,9 @@ def install():
     os.system("wget https://github.com/tekq/elements-search/raw/main/search")
     os.system("wget https://github.com/tekq/elements-search/raw/main/search-repo")
     os.system("mv -v search* /mnt/etc/elements/")
-    os.system("chmod a+x /usr/bin/lmt")
-    os.system("chmod a+x /etc/elements/search*")
+    os.system("chmod a+x /mnt/usr/bin/lmt")
+    os.system("chmod a+x /mnt/etc/elements/search*")
+    os.system("arch-chroot /mnt/ pip install python-Levenshtein colorama fuzzywuzzy")
 
     if atomic is True:
         print("Will you be using iwd NetworkManager or wpa_supplicant?")
