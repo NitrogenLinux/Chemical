@@ -102,9 +102,6 @@ def install():
         os.system("mkdir /mnt/boot/efi -p")
         os.system("mount /dev/" + disk + efi_part + " /mnt/boot/efi")
         print("/dev/" + disk + efi_part)
-        os.system("lsblk")
-        import time
-        time.sleep(10)
 
     print("Installing Nitrogen Base")
     os.system("pacstrap /mnt base linux-lts linux-firmware base-devel sof-firmware python btrfs-progs")
@@ -205,10 +202,10 @@ def install():
     if efi is True:
         print("This isn't going to boot")
         os.system("arch-chroot /mnt/ bootctl install")
+        os.system("mkdir -p /mnt/boot/loader/entries")
         os.system("echo 'title Nitrogen Linux' > /mnt/boot/loader/entries/nitrogen.conf ")
         os.system("echo 'linux /vmlinuz-linux-lts' >> /mnt/boot/loader/entries/nitrogen.conf ")
         os.system("echo 'initrd /initramfs-linux.img' >> /mnt/boot/loader/entries/nitrogen.conf ")
-        os.system("echo 'title Nitrogen Linux' >> /mnt/boot/loader/entries/nitrogen.conf ")
 
     else:
         print("Installing Grub")
