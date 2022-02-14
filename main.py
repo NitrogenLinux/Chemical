@@ -99,7 +99,7 @@ def install():
     os.system("mount /dev/" + disk + root + " /mnt")
     os.system("swapon -a")
     if efi is True: 
-        os.system("mkdir /mnt/boot/efi")
+        os.system("mkdir /mnt/boot/efi -p")
         os.system("mount /dev/" + disk + efi_part + " /mnt/boot/efi")
         print("/dev/" + disk + efi_part)
         os.system("lsblk")
