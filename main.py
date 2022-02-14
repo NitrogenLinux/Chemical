@@ -102,6 +102,9 @@ def install():
         os.system("mkdir /mnt/boot/efi")
         os.system("mount /dev/" + disk + efi_part + " /mnt/boot/efi")
         print("/dev/" + disk + efi_part)
+        os.system("lsblk")
+        import time
+        time.sleep(10)
 
     print("Installing Nitrogen Base")
     os.system("pacstrap /mnt base linux-lts linux-firmware base-devel sof-firmware python btrfs-progs")
@@ -197,16 +200,19 @@ def install():
     else:
         pass
 
-    print("Installing Grub")
-    os.system("pacstrap /mnt grub")
 
     print("Installing and Configuring Boot Loader")
     if efi is True:
-        # TODO: fix efi grub installer
-        os.system("pacstrap /mnt efibootmgr dosfstools os-prober mtools") # UEFI Specific Packages
-        os.system("mkdir /mnt/boot/efi") # create /boot/efi in /mnt
-        os.system("arch-chroot /mnt/ grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=Nitrogen") # GRUB UEFI Installation
+        print("This isn't going to boot")
+        os.system("arch-chroot /mnt/ bootctl install")
+        os.system("echo 'title Nitrogen Linux' > /mnt/boot/loader/entries/nitrogen.conf ")
+        os.system("echo 'linux /vmlinuz-linux-lts' >> /mnt/boot/loader/entries/nitrogen.conf ")
+        os.system("echo 'initrd /initramfs-linux.img' >> /mnt/boot/loader/entries/nitrogen.conf ")
+        os.system("echo 'title Nitrogen Linux' >> /mnt/boot/loader/entries/nitrogen.conf ")
+
     else:
+        print("Installing Grub")
+        os.system("pacstrap /mnt grub") # install GRUB
         os.system("arch-chroot /mnt/ grub-install --target=i386-pc /dev/" + disk) # Grub BIOS installation
 
     os.system("arch-chroot /mnt/ grub-mkconfig -o /boot/grub/grub.cfg") # Create Grub Configuration
