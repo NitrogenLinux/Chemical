@@ -196,10 +196,9 @@ def install():
     else:
         pass
 
-
     print("Installing and Configuring Boot Loader")
     if efi is True:
-        os.system("pacstrap /mnt efibootmgr dosfstools os-prober mtools") # UEFI Specific Packages
+        os.system("pacstrap /mnt efibootmgr dosfstools os-prober mtools grub") # UEFI Specific Packages and grub
         os.system("arch-chroot /mnt/ grub-install --target=x86_64-efi --bootloader-id=Nitrogen") # GRUB UEFI Installation
         import time
         time.sleep(10)
