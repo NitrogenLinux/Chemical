@@ -99,12 +99,8 @@ def install():
     os.system("mount /dev/" + disk + root + " /mnt")
     os.system("swapon -a")
     if efi is True: 
-        os.system("mkdir /mnt/boot/efi")
-        os.system("mount /dev/" + disk + efi_part + " /mnt/boot/efi")
-        print("/dev/" + disk + efi_part)
-        os.system("lsblk")
-        import time
-        time.sleep(10)
+        os.system("mkdir /mnt/boot/EFI -p")
+        os.system("mount /dev/" + disk + efi_part + " /mnt/boot/EFI")
 
     print("Installing Nitrogen Base")
     os.system("pacstrap /mnt base linux-lts linux-firmware base-devel sof-firmware python btrfs-progs")
@@ -170,7 +166,7 @@ def install():
     print("3. Intel")
     print("4. Other/VM")
 
-    gpu = int(input("GPU Manufacturer: "))
+    gpu = input("GPU Manufacturer: ")
     if gpu == 1:
         os.system("pacstrap /mnt nvidia-lts")
     elif gpu == 2:
@@ -183,7 +179,7 @@ def install():
         print("2. KVM")
         print("3. None")
 
-        vm_gpu = int(input("GPU Manufacturer: "))
+        vm_gpu = input("GPU Manufacturer: ")
         if vm_gpu == 1:
             print("Also installing VMmouse")
             os.system("pacstrap /mnt xf86-video-vmware xf86-input-vmmouse")
@@ -203,20 +199,19 @@ def install():
 
     print("Installing and Configuring Boot Loader")
     if efi is True:
-        print("This isn't going to boot")
-        os.system("arch-chroot /mnt/ bootctl install")
-        os.system("echo 'title Nitrogen Linux' > /mnt/boot/loader/entries/nitrogen.conf ")
-        os.system("echo 'linux /vmlinuz-linux-lts' >> /mnt/boot/loader/entries/nitrogen.conf ")
-        os.system("echo 'initrd /initramfs-linux.img' >> /mnt/boot/loader/entries/nitrogen.conf ")
-        os.system("echo 'title Nitrogen Linux' >> /mnt/boot/loader/entries/nitrogen.conf ")
-
+        os.system("pacstrap /mnt efibootmgr dosfstools os-prober mtools") # UEFI Specific Packages
+        os.system("arch-chroot /mnt/ grub-install --target=x86_64-efi --bootloader-id=Nitrogen") # GRUB UEFI Installation
+        import time
+        time.sleep(10)
     else:
         print("Installing Grub")
         os.system("pacstrap /mnt grub") # install GRUB
         os.system("arch-chroot /mnt/ grub-install --target=i386-pc /dev/" + disk) # Grub BIOS installation
 
     os.system("arch-chroot /mnt/ grub-mkconfig -o /boot/grub/grub.cfg") # Create Grub Configuration
-    
+
+    time.sleep(10)
+
     print("Configuring Nitrogen pt 2")
     os.system("curl https://raw.githubusercontent.com/NitrogenLinux/chemical/main/os-release > /mnt/etc/os-release")
     os.system("curl https://raw.githubusercontent.com/NitrogenLinux/chemical/main/os-release > /mnt/usr/lib/os-release")
@@ -238,7 +233,7 @@ def install():
         print("1. iwd")
         print("2. NetworkManager")
         print("3. wpa_supplicant")
-        network_supplier = int(input(" "))
+        network_supplier = int(input())
         if network_supplier == 1:
             os.system("pacstrap /mnt iwd")
             os.system("arch-chroot /mnt/ systemctl enable iwd")
