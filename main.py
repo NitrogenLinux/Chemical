@@ -153,7 +153,7 @@ def install():
     os.system("arch-chroot /mnt/ useradd -m -G wheel " + username)
     correct_passwd = False
     while correct_passwd is False:
-        if os.system("arch-chroot /mnt/ passwd " + username == 0):
+        if os.system("arch-chroot /mnt/ passwd " + username) == 0:
             correct_passwd = True
             pass
 
