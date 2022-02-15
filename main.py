@@ -151,7 +151,6 @@ def install():
     print("Creating a user")
     username = input("New user's name: ")
     os.system("arch-chroot /mnt/ useradd -m -G wheel " + username)
-    os.system("arch-chroot /mnt/ passwd " + username)
     correct_passwd = False
     while correct_passwd is False:
         if os.system("arch-chroot /mnt/ passwd " + username == 0):
