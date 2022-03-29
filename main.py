@@ -103,7 +103,7 @@ def install():
         os.system("mount /dev/" + disk + efi_part + " /mnt/boot/EFI")
 
     print("Installing Nitrogen Base")
-    os.system("for dir in dev proc sys; mkdir /mnt/$dir ; do mount --rbind /$dir /mnt/$dir; done")
+    os.system("for dir in dev proc sys run; do mount --rbind /$dir /mnt/$dir; mount --make-rslave /mnt/$dir; done")
     os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt base-system grub os-prober nano btrfs-progs")
     print("Configuring Nitrogen")
     print("Select Region")
