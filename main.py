@@ -232,7 +232,7 @@ def install():
             os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt iwd") # Install iwd
             os.system("chroot /mnt/ ln -s /etc/sv/iwd /var/service/") # Enable iwd
         elif network_supplier == 2:
-            os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt networkmanager")
+            os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt NetworkManager") # Install NetworkManager
             os.system("chroot /mnt/ ln -s /etc/sv/NetworkManager /var/service/")
         elif network_supplier == 3:
             os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt wpa_supplicant wpa_cli")
@@ -240,7 +240,7 @@ def install():
 
     else:
         print("Installing desktop environment")
-        os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt networkmanager gnome gdm >> /dev/null")
+        os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt NetworkManager gnome gdm >> /dev/null")
         os.system("chroot /mnt/ ln -sv /etc/sv/gdm /var/service/")
         os.system("chroot /mnt/ ln -sv /etc/sv/NetworkManager /var/service/")
 
