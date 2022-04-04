@@ -185,13 +185,15 @@ def install():
 #         elif vm_gpu == 3:
 #             pass
 
-    print("Would you like to install Laptop-specific packages?")
-    laptop = input("Y/n ")
-    if str(laptop) in ["y", "Y"]:
-        os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt tlp powertop")
-        os.system("chroot /mnt/ systemctl --enable tlp")
-    else:
-        pass
+
+    # TODO: add laptop software
+    # print("Would you like to install Laptop-specific packages?")
+    # laptop = input("Y/n ")
+    # if str(laptop) in ["y", "Y"]:
+    #     os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt tlp powertop")
+    #     os.system("chroot /mnt/ systemctl --enable tlp")
+    # else:
+    #     pass
 
     print("Installing and Configuring Boot Loader")
     if efi is True:
@@ -208,7 +210,7 @@ def install():
     os.system("curl https://raw.githubusercontent.com/NitrogenLinux/chemical/main/os-release > /mnt/usr/lib/os-release") # Add os-release
 
     print("Installing Elements") # Install elements
-    os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt wget git python python-pip") # Install wget, git, python, python-pip
+    os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt wget git python python-pip >> /dev/null") # Install wget, git, python, python-pip
     os.system("wget https://github.com/NitrogenLinux/elements/raw/stable/lmt") # Download Elements
     os.system("mv -v lmt /mnt/usr/bin") # Move Elements to /usr/bin
     os.system("mkdir -p /mnt/etc/elements/repos/") # Create elements repo directory
@@ -238,9 +240,9 @@ def install():
 
     else:
         print("Installing desktop environment")
-        os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt networkmanager gnome gdm")
-        os.system("chroot /mnt/ ln -s /etc/sv/gdm /var/service/")
-        os.system("chroot /mnt/ ln -s /etc/sv/NetworkManager /var/service/")
+        os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt networkmanager gnome gdm >> /dev/null")
+        os.system("chroot /mnt/ ln -sv /etc/sv/gdm /var/service/")
+        os.system("chroot /mnt/ ln -sv /etc/sv/NetworkManager /var/service/")
 
 
     print("")
