@@ -76,6 +76,8 @@ def install():
     if swap_existence in [ "y", "Y" ]:
         print("Select swap partition: ", end=" ")
         swap = input("/dev/" + disk)
+    else:
+        swap = ""
 
     if efi is True:
         print("Select EFI Partition")
