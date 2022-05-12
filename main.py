@@ -25,9 +25,9 @@ def install():
     os.system("xbps-install -Sy git wget curl")
     os.system("clear")
     if atomic is False:
-        print("Chemical 1.0")
+        print("Chemical 0.9")
     else:
-        print("Chemical 1.0(Atomic install)")
+        print("Chemical 0.9(Atomic install)")
     print()
     print("Partition Disks")
     print("Which disk would you like to use?")
@@ -59,21 +59,23 @@ def install():
     root = input("/dev/" + disk)
     if len(root) < 1:
         while len(str(root)) < 1:
-            print("That's not right, try again")
+            print("That doesn't seem right, try again")
             root = input("/dev/" + disk)
     else:
         while os.system("blkid /dev/" + disk + root + " >> /dev/null") != 0:
-            print("That's not right, try again")
+            print("That doesn't seem right, try again")
             os.system("lsblk /dev/" + disk)
             root = input("/dev/" + disk)
         while os.system("ls /dev/" + disk + root + " >> /dev/null") != 0:
-            print("That's not right, try again")
+            print("That doesn't seem right, try again")
             os.system("lsblk /dev/" + disk)
             root = input("/dev/" + disk)
 
-
-    print("Select swap(empty for none)")
-    swap = input("/dev/" + disk)
+    print("Swap partition?", end=" ")
+    swap_existence = str(input("Y/n "))
+    if swap_existence in [ "y", "Y" ]:
+        print("Select swap partition: ", end=" ")
+        swap = input("/dev/" + disk)
 
     if efi is True:
         print("Select EFI Partition")
@@ -205,7 +207,7 @@ def install():
     os.system("chroot /mnt/ grub-mkconfig -o /boot/grub/grub.cfg") # Generate grub.cfg
     os.system("chroot /mnt/ xbps-reconfigure -fa") # configure everything
 
-    print("Configuring Nitrogen pt 2") # Configure system
+    print("Tweaking Nitrogen") # Configure system
     os.system("curl https://raw.githubusercontent.com/NitrogenLinux/chemical/main/os-release > /mnt/etc/os-release") # Add os-release
     os.system("curl https://raw.githubusercontent.com/NitrogenLinux/chemical/main/os-release > /mnt/usr/lib/os-release") # Add os-release
 
@@ -240,7 +242,7 @@ def install():
 
     else:
         print("Installing desktop environment")
-        os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt NetworkManager gnome-core xorg wayland gdm >> /dev/null")
+        os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt NetworkManager gnome-core xorg wayland gdm python3-dbus")
         os.system("chroot /mnt/ ln -sv /etc/sv/gdm /var/service/")
         os.system("chroot /mnt/ ln -sv /etc/sv/NetworkManager /var/service/")
 
