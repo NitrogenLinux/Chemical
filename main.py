@@ -131,9 +131,9 @@ def install():
             pass
 
     os.system("ln -s /mnt/usr/share/zoneinfo/" + region + "/" + city + " /mnt/etc/localtime")
-    os.system('echo "LANG=en_US.UTF-8" > /mnt/etc/locale.conf')
-    os.system('echo "en_US.UTF-8 UTF-8" >> /mnt/etc/default/libc-locales')
-    os.system("chroot /mnt/ xbps-reconfigure -f glibc-locales")
+    os.system('echo "LANG=en_US.UTF-8" > /etc/locale.conf')
+    os.system('echo "en_US.UTF-8 UTF-8" >> /etc/default/libc-locales')
+    os.system("xbps-reconfigure -f glibc-locales")
 
     print("Select hostname(empty for default)")
     hostname = input("Hostname: ")
@@ -226,7 +226,6 @@ def install():
     os.system("chmod a+x /mnt/usr/bin/lmt") # Make lmt executable
     os.system("chmod a+x /mnt/etc/elements/search*") # Make search executable
     os.system("chmod a+x -R /mnt/etc/elements/repos/*") # Make repos executable
-    os.system("chroot /mnt/ pip3 install colorama requests") # Install colorama and requests
 
     if atomic is True:
         print("Will you be using iwd NetworkManager or wpa_supplicant?") # NetworkManager or wpa_supplicant or iwd
@@ -253,6 +252,10 @@ def install():
         os.system("chroot /mnt/ ln -sv /etc/sv/dhcpcd /var/service/")
         print("Set sudo perms")
         os.system('echo "%sudo ALL=(ALL:ALL) ALL" > /mnt/etc/sudoers')
+
+        print("Customizing Desktop Environment")
+        os.system("chroot /mnt/ 'wget -qO- https://git.io/papirus-icon-theme-install | sh'") # add icon theme
+        os.system("chroot /mnt/ 'gsettings set org.gnome.desktop.interface icon-theme Papirus'") # set icons
 
 
     print("")
