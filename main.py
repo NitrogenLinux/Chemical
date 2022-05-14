@@ -242,13 +242,13 @@ def install():
 
     else:
         print("Installing desktop environment")
-        os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt NetworkManager gnome-core xorg wayland gdm python3-dbus")
+        os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt NetworkManager gnome-core xorg wayland gdm python3-dbus gnome-terminal")
         os.system("chroot /mnt/ ln -sv /etc/sv/gdm /var/service/")
         os.system("chroot /mnt/ ln -sv /etc/sv/dbus /var/service/")
         os.system("chroot /mnt/ ln -sv /etc/sv/NetworkManager /var/service/")
         os.system("chroot /mnt/ ln -sv /etc/sv/dhcpcd /var/service/")
         print("Set sudo perms")
-        os.system("echo %sudo ALL=(ALL:ALL) ALL > /mnt/etc/sudoers")
+        os.system('echo "%sudo ALL=(ALL:ALL) ALL" > /mnt/etc/sudoers')
 
 
     print("")
