@@ -232,7 +232,7 @@ def install():
         print("2. NetworkManager")
         print("3. wpa_supplicant")
         network_supplier = int(input())
-        if network_supplier == 1: # TODO: convert these to runit
+        if network_supplier == 1:
             os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt iwd") # Install iwd
             os.system("chroot /mnt/ ln -s /etc/sv/iwd /var/service/") # Enable iwd
         elif network_supplier == 2:
@@ -246,7 +246,9 @@ def install():
         print("Installing desktop environment")
         os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt NetworkManager gnome-core xorg wayland gdm python3-dbus")
         os.system("chroot /mnt/ ln -sv /etc/sv/gdm /var/service/")
+        os.system("chroot /mnt/ ln -sv /etc/sv/dbus /var/service/")
         os.system("chroot /mnt/ ln -sv /etc/sv/NetworkManager /var/service/")
+        os.system("chroot /mnt/ ln -sv /etc/sv/dhcpcd /var/service/")
 
 
     print("")
