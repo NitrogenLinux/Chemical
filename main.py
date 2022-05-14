@@ -151,7 +151,7 @@ def install():
 
     print("Creating a user")
     username = input("New user's name: ")
-    os.system("chroot /mnt/ useradd -m -G wheel " + username)
+    os.system("chroot /mnt/ useradd -m -G sudo,users " + username)
     correct_passwd = False
     while correct_passwd is False:
         if os.system("chroot /mnt/ passwd " + username) == 0:
@@ -163,41 +163,38 @@ def install():
     print("1. NVIDIA")
     print("2. AMD")
     print("3. Intel")
-    print("4. Other/VM")
+    print("4. None/VM")
 
 # TODO: bring these to Void Linux
 
-#    gpu = int(input("GPU Manufacturer: "))
-#     if gpu == 1:
-#         os.system("pacstrap /mnt nvidia-lts")
-#     elif gpu == 2:
-#         os.system("pacstrap /mnt mesa")
-#     elif gpu == 3:
-#         os.system("pacstrap /mnt mesa xf86-video-intel")
-#     elif gpu == 4:
-#         print("Virtual Machines:")
-#         print("1. VMWare")
-#         print("2. KVM")
-#         print("3. None")
-#
-#         vm_gpu = int(input("GPU Manufacturer: "))
-#         if vm_gpu == 1:
-#             print("Also installing VMmouse")
-#             os.system("pacstrap /mnt xf86-video-vmware xf86-input-vmmouse")
-#         elif vm_gpu == 2:
-#             os.system("pacstrap /mnt xf86-video-qxl")
-#         elif vm_gpu == 3:
-#             pass
+    gpu = int(input("GPU Manufacturer: "))
+    if gpu == 1:
+        print("GPU Model(only number; ex: 2060, 2080, 1650)", end=": ")
+        nvidia_model = int(input())
+        if nvidia_model >= 800:
+            os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt nvidia nvidia-libs-32bit")
+        elif nvidia_model == 700:
+            os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt nvidia470 nvidia470-libs-32bit")
+        elif nvidia_model == 600:
+            os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt nvidia470 nvidia470-libs-32bit")
+        elif nvidia_model <= 500:
+            os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt nvidia390 nvidia470-libs-32bit")
 
+    elif gpu == 2:
+        os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt mesa-dri vulkan-loader mesa-vulkan-radeon amdvlk")
+    elif gpu == 3:
+        os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt mesa-dri linux-firmware-intel mesa-vulkan-intel vulkan-loader")
+    elif gpu == 4:
+        pass
 
     # TODO: add laptop software
-    # print("Would you like to install Laptop-specific packages?")
-    # laptop = input("Y/n ")
-    # if str(laptop) in ["y", "Y"]:
-    #     os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt tlp powertop")
-    #     os.system("chroot /mnt/ systemctl --enable tlp")
-    # else:
-    #     pass
+    print("Would you like to install Laptop-specific packages?")
+    laptop = input("Y/n ")
+    if str(laptop) in ["y", "Y"]:
+        os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt tlp powertop")
+        os.system("chroot /mnt/ ln -sv /etc/sv/tlp /var/service")
+    else:
+        pass
 
     print("Installing and Configuring Boot Loader")
     if efi is True:
@@ -249,6 +246,8 @@ def install():
         os.system("chroot /mnt/ ln -sv /etc/sv/dbus /var/service/")
         os.system("chroot /mnt/ ln -sv /etc/sv/NetworkManager /var/service/")
         os.system("chroot /mnt/ ln -sv /etc/sv/dhcpcd /var/service/")
+        print("Set sudo perms")
+        os.system("echo %sudo ALL=(ALL:ALL) ALL > /mnt/etc/sudoers")
 
 
     print("")
