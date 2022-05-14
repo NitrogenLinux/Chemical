@@ -150,6 +150,7 @@ def install():
 
 
     print("Creating a user")
+    os.system("chroot /mnt groupadd sudo")
     username = input("New user's name: ")
     os.system("chroot /mnt/ useradd -m -G sudo,users " + username)
     correct_passwd = False
