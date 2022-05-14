@@ -209,11 +209,12 @@ def install():
     os.system("chroot /mnt/ xbps-reconfigure -fa") # configure everything
 
     print("Tweaking Nitrogen") # Configure system
-    os.system("curl https://raw.githubusercontent.com/NitrogenLinux/chemical/main/os-release > /mnt/etc/os-release") # Add os-release
-    os.system("curl https://raw.githubusercontent.com/NitrogenLinux/chemical/main/os-release > /mnt/usr/lib/os-release") # Add os-release
+    os.system("curl https://raw.githubusercontent.com/NitrogenLinux/chemical/main/os-release > /mnt/etc/os-release") # Replace Void's os-release with Nitrogen's
+    os.system("curl https://raw.githubusercontent.com/NitrogenLinux/chemical/main/os-release > /mnt/usr/lib/os-release") # Replace Void's os-release with Nitrogen's
+    os.system("curl https://raw.githubusercontent.com/NitrogenLinux/chemical/main/lsb_release > /mnt/usr/bin/lsb_release") # Replace Void's lsb_release with Nitrogen's
 
     print("Installing Elements") # Install elements
-    os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt wget git python python-pip >> /dev/null") # Install wget, git, python, python-pip
+    os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt wget git python3 python3-pip >> /dev/null") # Install wget, git, python, python-pip
     os.system("wget https://github.com/NitrogenLinux/elements/raw/stable/lmt") # Download Elements
     os.system("mv -v lmt /mnt/usr/bin") # Move Elements to /usr/bin
     os.system("mkdir -p /mnt/etc/elements/repos/") # Create elements repo directory
@@ -223,7 +224,8 @@ def install():
     os.system("mv -v search* /mnt/etc/elements/") # Move search to /etc/elements
     os.system("chmod a+x /mnt/usr/bin/lmt") # Make lmt executable
     os.system("chmod a+x /mnt/etc/elements/search*") # Make search executable
-    os.system("chroot /mnt/ pip install colorama requests") # Install colorama and requests
+    os.system("chmod a+x -R /mnt/etc/elements/repos/*") # Make repos executable
+    os.system("chroot /mnt/ pip3 install colorama requests") # Install colorama and requests
 
     if atomic is True:
         print("Will you be using iwd NetworkManager or wpa_supplicant?") # NetworkManager or wpa_supplicant or iwd
