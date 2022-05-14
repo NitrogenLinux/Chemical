@@ -254,8 +254,8 @@ def install():
         os.system('echo "%sudo ALL=(ALL:ALL) ALL" > /mnt/etc/sudoers')
 
         print("Customizing Desktop Environment")
-        os.system("chroot /mnt/ 'wget -qO- https://git.io/papirus-icon-theme-install | sh'") # add icon theme
-        os.system("chroot /mnt/ 'gsettings set org.gnome.desktop.interface icon-theme Papirus'") # set icons
+        os.system("chroot /mnt/ curl https://git.io/papirus-icon-theme-install | sh") # add icon theme
+        os.system("chroot /mnt/ gsettings set org.gnome.desktop.interface icon-theme Papirus") # set icons
 
 
     print("")
