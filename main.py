@@ -131,7 +131,8 @@ def install():
             pass
 
     os.system("ln -s /mnt/usr/share/zoneinfo/" + region + "/" + city + " /mnt/etc/localtime")
-    os.system("echo LANG=en_US.UTF-8 >> /mnt/etc/default/libc-locales")
+    os.system('echo "LANG=en_US.UTF-8" > /etc/locale.conf')
+    os.system('echo "en_US.UTF-8 UTF-8" >> /etc/default/libc-locales')
     os.system("xbps-reconfigure -f glibc-locales")
 
     print("Select hostname(empty for default)")
