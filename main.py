@@ -107,7 +107,7 @@ def install():
         os.system("mount /dev/" + disk + efi_part + " /mnt/boot/EFI")
 
     print("Installing Nitrogen Base")
-    os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt base-system grub os-prober nano btrfs-progs")
+    os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt base-system grub os-prober nano btrfs-progs void-repo-nonfree")
     os.system("for dir in dev proc sys run; do mount --rbind /$dir /mnt/$dir; mount --make-rslave /mnt/$dir; done")
     print("Configuring Nitrogen")
     print("Select Region")
@@ -131,9 +131,9 @@ def install():
             pass
 
     os.system("ln -s /mnt/usr/share/zoneinfo/" + region + "/" + city + " /mnt/etc/localtime")
-    os.system('echo "LANG=en_US.UTF-8" > /etc/locale.conf')
-    os.system('echo "en_US.UTF-8 UTF-8" >> /etc/default/libc-locales')
-    os.system("xbps-reconfigure -f glibc-locales")
+    os.system('echo "LANG=en_US.UTF-8" > /mnt/etc/locale.conf')
+    os.system('echo "en_US.UTF-8 UTF-8" >> /mnt/etc/default/libc-locales')
+    os.system("chroot /mnt 'xbps-reconfigure -f glibc-locales'")
 
     print("Select hostname(empty for default)")
     hostname = input("Hostname: ")
@@ -167,8 +167,6 @@ def install():
     print("2. AMD")
     print("3. Intel")
     print("4. None/VM")
-
-# TODO: bring these to Void Linux
 
     gpu = int(input("GPU Manufacturer: "))
     if gpu == 1:
@@ -216,8 +214,8 @@ def install():
 
     print("Installing Elements") # Install elements
     os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt wget git python3 python3-pip >> /dev/null") # Install wget, git, python, python-pip
-    os.system("wget https://github.com/NitrogenLinux/elements/raw/stable/lmt") # Download Elements
-    os.system("mv -v lmt /mnt/usr/bin") # Move Elements to /usr/bin
+    os.system("wget https://github.com/NitrogenLinux/elements/raw/stable/lmt.py") # Download Elements
+    os.system("mv -v lmt.py /mnt/usr/bin/lmt") # Move Elements to /usr/bin
     os.system("mkdir -p /mnt/etc/elements/repos/") # Create elements repo directory
     os.system("git clone https://github.com/NitrogenLinux/elements-repo.git /mnt/etc/elements/repos/") # Clone elements repo
     os.system("wget https://github.com/tekq/elements-search/raw/main/search") # Download search
@@ -257,7 +255,7 @@ def install():
     print("")
 
     print("Do you want to reboot?")
-    reboot_y_n = input("Y/n")
+    reboot_y_n = input("Y/n ")
     if reboot_y_n == "y":
         os.system("reboot")
     else:
