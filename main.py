@@ -161,6 +161,8 @@ def install():
         if os.system("chroot /mnt/ passwd " + username) == 0:
             correct_passwd = True
             pass
+        
+    os.system("usermod -aG sudo root") # fix sudo perms for root
 
     print("Installing drivers")
     print("Which GPU are you using?")
