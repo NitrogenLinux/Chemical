@@ -162,8 +162,6 @@ def install():
             correct_passwd = True
             pass
         
-    os.system("usermod -aG sudo root") # fix sudo perms for root
-
     print("Installing drivers")
     print("Which GPU are you using?")
     print("1. NVIDIA")
@@ -253,6 +251,7 @@ def install():
         os.system("chroot /mnt/ ln -sv /etc/sv/dhcpcd /var/service/")
         print("Set sudo perms")
         os.system('echo "%sudo ALL=(ALL:ALL) ALL" > /mnt/etc/sudoers')
+        os.system('echo "root ALL=(ALL:ALL) ALL" > /mnt/etc/sudoers') # let root use sudo(fixes Elements 1st time setup)        
 
     print("")
     print("")
