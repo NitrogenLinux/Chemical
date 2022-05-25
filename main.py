@@ -8,7 +8,7 @@ if os.geteuid() != 0:
     exit("You must run chemical as root!")
 
 # Check for internet
-if os.system("ping voidlinux.org -c 1") != 0:
+if os.system("ping -c1 voidlinux.org") != 0:
     exit("You must be connected to the internet to use chemical.")
 
 if os.path.isdir("/sys/firmware/efi/efivars/") is True:
