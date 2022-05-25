@@ -108,7 +108,7 @@ def install():
         os.system("mount /dev/" + disk + efi_part + " /mnt/boot/EFI")
 
     print("Installing Nitrogen Base")
-    os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt base-system grub os-prober nano btrfs-progs void-repo-nonfree")
+    os.system("XBPS_ARCH=x86_64 xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt base-system grub os-prober nano btrfs-progs void-repo-nonfree")
     os.system("for dir in dev proc sys run; do mount --rbind /$dir /mnt/$dir; mount --make-rslave /mnt/$dir; done")
     print("Configuring Nitrogen")
     print("Select Region")
@@ -176,18 +176,18 @@ def install():
         print("GPU Model(only number; ex: 2060, 2080, 1650)", end=": ")
         nvidia_model = int(input())
         if nvidia_model >= 800:
-            os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt nvidia nvidia-libs-32bit")
+            os.system("XBPS_ARCH=x86_64 xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt nvidia nvidia-libs-32bit")
         elif nvidia_model == 700:
-            os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt nvidia470 nvidia470-libs-32bit")
+            os.system("XBPS_ARCH=x86_64 xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt nvidia470 nvidia470-libs-32bit")
         elif nvidia_model == 600:
-            os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt nvidia470 nvidia470-libs-32bit")
+            os.system("XBPS_ARCH=x86_64 xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt nvidia470 nvidia470-libs-32bit")
         elif nvidia_model <= 500:
-            os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt nvidia390 nvidia470-libs-32bit")
+            os.system("XBPS_ARCH=x86_64 xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt nvidia390 nvidia470-libs-32bit")
 
     elif gpu == 2:
-        os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt mesa-dri vulkan-loader mesa-vulkan-radeon amdvlk")
+        os.system("XBPS_ARCH=x86_64 xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt mesa-dri vulkan-loader mesa-vulkan-radeon amdvlk")
     elif gpu == 3:
-        os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt mesa-dri linux-firmware-intel mesa-vulkan-intel vulkan-loader")
+        os.system("XBPS_ARCH=x86_64 xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt mesa-dri linux-firmware-intel mesa-vulkan-intel vulkan-loader")
     elif gpu == 4:
         pass
 
@@ -195,7 +195,7 @@ def install():
     print("Would you like to install Laptop-specific packages?")
     laptop = input("Y/n ")
     if str(laptop) in ["y", "Y"]:
-        os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt tlp powertop")
+        os.system("XBPS_ARCH=x86_64 xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt tlp powertop")
         os.system("chroot /mnt/ ln -sv /etc/sv/tlp /var/service")
     else:
         pass
@@ -235,18 +235,18 @@ def install():
         print("3. wpa_supplicant")
         network_supplier = int(input("1/2/3: "))
         if network_supplier == 1:
-            os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt iwd") # Install iwd
+            os.system("XBPS_ARCH=x86_64 xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt iwd") # Install iwd
             os.system("chroot /mnt/ ln -s /etc/sv/iwd /var/service/") # Enable iwd
         elif network_supplier == 2:
-            os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt NetworkManager") # Install NetworkManager
+            os.system("XBPS_ARCH=x86_64 xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt NetworkManager") # Install NetworkManager
             os.system("chroot /mnt/ ln -s /etc/sv/NetworkManager /var/service/")
         elif network_supplier == 3:
-            os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt wpa_supplicant wpa_cli")
+            os.system("XBPS_ARCH=x86_64 xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt wpa_supplicant wpa_cli")
             os.system("chroot /mnt/ ln -s /etc/sv/wpa_supplicant /var/service/")
 
     else:
         print("Installing desktop environment")
-        os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt NetworkManager gnome-core xorg wayland gdm python3-dbus gnome-terminal")
+        os.system("XBPS_ARCH=x86_64 xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt NetworkManager gnome-core xorg wayland gdm python3-dbus gnome-terminal")
         os.system("chroot /mnt/ ln -sv /etc/sv/gdm /var/service/")
         os.system("chroot /mnt/ ln -sv /etc/sv/dbus /var/service/")
         os.system("chroot /mnt/ ln -sv /etc/sv/NetworkManager /var/service/")
