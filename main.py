@@ -149,7 +149,6 @@ def install():
         c_passwd_answer = os.system("chroot /mnt/ passwd root")
         if c_passwd_answer == 0:
             correct_passwd = True
-            pass
 
 
     print("Creating a user")
@@ -160,7 +159,6 @@ def install():
     while correct_passwd is False:
         if os.system("chroot /mnt/ passwd " + username) == 0:
             correct_passwd = True
-            pass
         
     print("Installing drivers")
     print("Which GPU are you using?")
