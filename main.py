@@ -11,10 +11,7 @@ if os.geteuid() != 0:
 if os.system("ping -c1 voidlinux.org") != 0:
     sys.exit("You must be connected to the internet to use chemical.")
 
-if os.path.isdir("/sys/firmware/efi/efivars/") is True:
-    efi = True
-else:
-    efi = False
+efi = os.path.isdir("/sys/firmware/efi/efivars/") is True
 
 if sys.argv[1:]:
     if sys.argv[1] == "atomic":
