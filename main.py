@@ -209,17 +209,16 @@ def install():
     os.system("curl https://raw.githubusercontent.com/NitrogenLinux/chemical/main/lsb_release > /mnt/usr/bin/lsb_release") # Replace Void's lsb_release with Nitrogen's
 
     print("Installing Elements") # Install elements
-    os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt wget git python3 python3-pip >> /dev/null") # Install wget, git, python, python-pip
-    os.system("wget https://github.com/NitrogenLinux/elements/raw/stable/lmt.py") # Download Elements
-    os.system("mv -v lmt.py /mnt/usr/bin/lmt") # Move Elements to /usr/bin
+    os.system("xbps-install -Sy -R https://alpha.de.repo.voidlinux.org/current -r /mnt wget git curl >> /dev/null") # Install wget, git, python, python-pip
+    os.system("#curl -s https://api.github.com/repos/NitrogenLinux/Elements/releases/latest | grep 'browser_download_url.*lmt' | cut -d : -f 2,3 | tr -d \" | wget -qi -") # Download Elements
+    os.system("mv -v lmt /mnt/usr/bin/lmt") # Move Elements to /usr/bin
     os.system("mkdir -p /mnt/etc/elements/repos/") # Create elements repo directory
-    os.system("git clone https://github.com/NitrogenLinux/elements-repo.git /mnt/etc/elements/repos/") # Clone elements repo
-    os.system("wget https://github.com/tekq/elements-search/raw/main/search") # Download search
-    os.system("wget https://github.com/tekq/elements-search/raw/main/search-repo") # Download search-repo
-    os.system("mv -v search* /mnt/etc/elements/") # Move search to /etc/elements
+    os.system("git clone https://github.com/NitrogenLinux/elements-repo.git /mnt/etc/elements/repos/Nitrogen") # Clone elements repo
+    os.system("git clone https://github.com/NitrogenLinux/elements-repo.git /mnt/etc/elements/repos/.old_Nitrogen") # Clone elements repo
+    os.system("mkdir -p /mnt/etc/elements/.sys_files")
+    os.system("touch /mnt/etc/elements/.sys_files/.pkg.db")
     os.system("chmod a+x /mnt/usr/bin/lmt") # Make lmt executable
-    os.system("chmod a+x /mnt/etc/elements/search*") # Make search executable
-    os.system("chmod a+x -R /mnt/etc/elements/repos/*") # Make repos executable
+    os.system("chmod a+x -R /mnt/etc/elements/repos/Nitrogen") # Make packages executable
 
     if atomic is True:
         print("Will you be using iwd NetworkManager or wpa_supplicant?") # NetworkManager or wpa_supplicant or iwd
