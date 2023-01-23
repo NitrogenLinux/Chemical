@@ -1,5 +1,5 @@
 # chemical
-Chemical is a simple installer for Nitrogen, coded in python.
+vfinst is a simple installer for Vefjiaw.
 
 # Installing
 Boot an Void Linux ISO and then type
